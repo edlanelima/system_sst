@@ -3,10 +3,13 @@ package database
 import (
 	"context"
 	"database/sql"
+
+	"github.com/edlanelima/system_sst/internal/domain/entity"
 )
 
 type IDatabase interface {
 	SearchLevel(ctx context.Context, email, password string) (string, error)
+	Insert(ctx context.Context, input entity.UserByRole) error
 }
 
 type Database struct {
@@ -21,7 +24,6 @@ func (d *Database) SearchLevel(
 	ctx context.Context,
 	email, password string,
 ) (string, error) {
-
 	query := `
         SELECT role
         FROM users
@@ -39,4 +41,18 @@ func (d *Database) SearchLevel(
 	}
 
 	return role, nil
+}
+
+func (d *Database) Insert(ctx context.Context, input entity.UserByRole) error {
+	query := `
+		INSERT INTO users (fullname, email, password, level)
+		VALUES (?, ?, ?, ?)
+	`
+
+	_, err := d.mysql.ExecContext(ctx, query, input.FullName, input.Email, input.Password, input.Role)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

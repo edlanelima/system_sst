@@ -22,6 +22,10 @@ func (d *DatabaseLocal) SearchLevel(
 
 }
 
+func (d *DatabaseLocal) Insert(ctx context.Context, input entity.UserByRole) error {
+	return nil
+}
+
 func mockBase(email, password string) (string, error) {
 	if email == "admin@admin.com" && password == "admin" {
 		return string(entity.Admin), nil
